@@ -2,42 +2,36 @@ import java.util.*;
 
 public interface RouteFinder {
     Scanner sc = new Scanner(System.in);
-    Map map = new Map(); // Uses your Map class with cities & distance
+    Map map = new Map();
 
     default void findRoute() {
-        System.out.print("Enter Initial Location: ");
-        String location = sc.nextLine().toUpperCase();
+        System.out.print("Enter Starting Location: ");
+        String start = sc.nextLine().trim().toUpperCase();
         System.out.print("Enter Destination: ");
-        String destination = sc.nextLine().toUpperCase();
+        String end = sc.nextLine().trim().toUpperCase();
 
-        if (location.equals(destination)) {
-            System.out.println("You cannot travel from the same location.");
+        if (start.equals(end)) {
+            System.out.println("\nStarting and destination are the same. Traversing the entire map...\n");
+            traverse(start);
         } else {
-            search(location, destination);
+            search(start, end);
         }
     }
 
-    default void search(String location, String destination) {
-        int source = -1, dest = -1;
+    default void search(String start, String end) {
+        int source = getCityIndex(start);
+        int destination = getCityIndex(end);
 
-        // Find the index of source and destination
-        for (int i = 0; i < map.cities.length; i++) {
-            if (map.cities[i].equals(location)) source = i;
-            if (map.cities[i].equals(destination)) dest = i;
-        }
-
-        if (source == -1 || dest == -1) {
+        if (source == -1 || destination == -1) {
             System.out.println("Invalid city name entered.");
             return;
         }
 
-        // If direct connection exists
-        if (map.distance[source][dest] != 0) {
-            System.out.println("Route Found: " + location + " -> " + destination);
-            System.out.println("Direct Distance: " + map.distance[source][dest]);
+        if (map.distance[source][destination] != 0) {
+            System.out.println("Route Found: " + start + " -> " + end);
+            System.out.println("Direct Distance: " + map.distance[source][destination]);
         } else {
-            // Otherwise, find shortest path via Dijkstra
-            dijkstra(source, dest);
+            dijkstra(source, destination);
         }
     }
 
@@ -53,7 +47,7 @@ public interface RouteFinder {
 
         for (int count = 0; count < n - 1; count++) {
             int u = minDistance(dist, visited);
-            if (u == -1) break; // no reachable vertex
+            if (u == -1) break;
             visited[u] = true;
 
             for (int v = 0; v < n; v++) {
@@ -70,10 +64,60 @@ public interface RouteFinder {
             return;
         }
 
-        // Display shortest path
         System.out.println("\nShortest Route Found:");
         printPath(parent, destination);
         System.out.println("\nTotal Distance: " + dist[destination]);
+    }
+
+    default void traverse(String startCity) {
+        int startIndex = getCityIndex(startCity);
+        if (startIndex == -1) {
+            System.out.println("Invalid city name.");
+            return;
+        }
+
+        boolean[] visited = new boolean[map.cities.length];
+        int totalDistance = 0;
+        int current = startIndex;
+
+        System.out.print("Traverse Path: ");
+        System.out.print(map.cities[current]);
+        visited[current] = true;
+
+        for (int i = 1; i < map.cities.length; i++) {
+            int next = findNearestUnvisited(current, visited);
+            if (next == -1) break;
+            System.out.print(" -> " + map.cities[next]);
+            totalDistance += map.distance[current][next];
+            visited[next] = true;
+            current = next;
+        }
+
+        if (map.distance[current][startIndex] != 0) {
+            totalDistance += map.distance[current][startIndex];
+            System.out.print(" -> " + map.cities[startIndex]);
+        }
+
+        System.out.println("\nTotal Distance Travelled: " + totalDistance);
+    }
+
+    default int findNearestUnvisited(int current, boolean[] visited) {
+        int minDist = Integer.MAX_VALUE;
+        int nearest = -1;
+        for (int i = 0; i < map.cities.length; i++) {
+            if (!visited[i] && map.distance[current][i] != 0 && map.distance[current][i] < minDist) {
+                minDist = map.distance[current][i];
+                nearest = i;
+            }
+        }
+        return nearest;
+    }
+
+    default int getCityIndex(String city) {
+        for (int i = 0; i < map.cities.length; i++) {
+            if (map.cities[i].equals(city)) return i;
+        }
+        return -1;
     }
 
     default int minDistance(int[] dist, boolean[] visited) {
