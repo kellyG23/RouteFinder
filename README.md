@@ -52,39 +52,31 @@ RouteFinder/
 Once you start the application, you'll be presented with a menu:
 
 ```
-1. Find shortest route
-2. Display all locations
-3. Exit
-Enter your choice:
-```
-
-### Menu Options
-
-#### Option 1: Find Shortest Route
+Option 1: Find Shortest Route
 - Enter the starting location
 - Enter the destination location
 - The program will calculate and display:
   - The optimal path from start to destination
   - Total distance of the route
   - All intermediate stops along the way
-
-#### Option 2: Display All Locations
-- Shows all available locations/nodes in the graph
-- Useful for reference when planning routes
-
-#### Option 3: Exit
-- Closes the application
+Option 2: Traverse
+ - Enter “N”as the starting location and destination.
+ - Circular graphs will show a circular route.
+Option 3: Exit
+ - Closes the application
+```
 
 ### Example Usage
 
 ```
-Enter your choice: 1
-Enter starting location: CityA
-Enter destination: CityD
+Enter starting location: A
+Enter destination: D
 
-Shortest route from CityA to CityD:
-CityA -> CityB -> CityD
-Total distance: 150 km
+Shortest Route Found:
+A -> B -> D
+Total Distance: 13
+
+Process finished with exit code 0
 ```
 
 ## Algorithm Details
