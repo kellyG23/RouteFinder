@@ -51,7 +51,6 @@ RouteFinder/
 
 Once you start the application, you'll be presented with a menu:
 
-```
 Option 1: Find Shortest Route
 - Enter the starting location
 - Enter the destination location
@@ -64,7 +63,6 @@ Option 2: Traverse
  - Circular graphs will show a circular route.
 Option 3: Exit
  - Closes the application
-```
 
 ### Example Usage
 
